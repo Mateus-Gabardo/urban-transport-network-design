@@ -1,0 +1,61 @@
+/* temporary fix to load default gradio font in frontend instead of backend */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+
+/* general gradio fixes */
+
+:root, .dark{
+    --checkbox-label-gap: 0.25em 0.1em;
+    --section-header-text-size: 12pt;
+    --block-background-fill: transparent;
+}
+
+div.gradio-container{
+    max-width: unset !important;
+}
+
+.hidden{
+    display: none;
+}
+
+.compact{
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+div.form{
+    border-width: 0;
+    box-shadow: none;
+    background: transparent;
+    overflow: visible;
+    gap: 0.5em;
+}
+
+.block.gradio-dropdown,
+.block.gradio-slider,
+.block.gradio-checkbox,
+.block.gradio-textbox,
+.block.gradio-radio,
+.block.gradio-checkboxgroup,
+.block.gradio-number,
+.block.gradio-colorpicker
+{
+    border-width: 0 !important;
+    box-shadow: none !important;
+}
+
+/* general styled components */
+
+.gradio-button.tool{
+    max-width: 2.2em;
+    min-width: 2.2em !important;
+    height: 2.4em;
+    align-self: end;
+    line-height: 1em;
+    border-radius: 0.5em;
+}
+
+#simulate {
+    min-height: 4.5em;
+    margin-top: 10px
+}
