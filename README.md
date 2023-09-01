@@ -4,13 +4,15 @@
 
 ### Rodando os Algoritmos
 Os algoritmos foram preparados para rodar nas instâncias requeridas. Para rodá-los execute o próprio arquivo do algoritmo, passando os argumentos necessários.
+
 Obs: Para saber os argumentos de cada algoritmo basta rodar o arquivo do mesmo seguido de `--help`
+
 Exemplo: `python algoritm_local_search,py --help`.
 
 As instâncias estarão contidas dentro de `data/`
 
 ### Exemplos de uso
-`python algoritm_local_search.py --ist sioux_falls/siouxFalls.json --bd 20 --it 3 --st 2`
+```python algoritm_local_search.py --ist sioux_falls/siouxFalls.json --bd 20 --it 3 --st 2```
 
 ## Instalação do projeto
 
