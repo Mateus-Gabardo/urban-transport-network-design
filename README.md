@@ -1,6 +1,8 @@
-# Sistema para redução de congestionamentos
+# Urban Transport Network Design Problem
 
-## Siga as intruções para a instalação do projeto ao rodar pela primeira vez.
+Repositório parcial da aplicação de algoritmos para resolução de Problema de Projeto de Redes Urbanas (UNDP), Vinculado ao projeto de pesquisa: “Projeto Automático de Algoritmos”
+
+Siga as intruções para a instalação do projeto ao rodar pela primeira vez.
 
 ### Rodando os Algoritmos
 Os algoritmos foram preparados para rodar nas instâncias requeridas. Para rodá-los execute o próprio arquivo do algoritmo, passando os argumentos necessários.
