@@ -9,6 +9,9 @@ Exemplo: `python algoritm_local_search,py --help`.
 
 As instâncias estarão contidas dentro de `data/`
 
+### Exemplos de uso
+`python algoritm_local_search.py --ist sioux_falls/siouxFalls.json --bd 20 --it 3 --st 2`
+
 ## Instalação do projeto
 
 1. Crie um ambiente virtual
