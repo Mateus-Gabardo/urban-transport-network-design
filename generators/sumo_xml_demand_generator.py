@@ -11,8 +11,11 @@ class SumoXmlDemandGenerator:
         self.duarouter_path = os.path.join(self.sumo_dir, "duarouter")
     
     def generateDemand(self, num_vehicles, probability, seed):
-        command = ["python", "src/generators/randomTrips.py", "-n", self.net_file, "-r", self.rou_file, "-e", str(num_vehicles), "-p", str(probability), "-s", str(seed)]
-        subprocess.call(command)
+        command = ["python", "generators/randomTrips.py", "-n", self.net_file, "-r", self.rou_file, "-e", str(num_vehicles), "-p", str(probability), "-s", str(seed), "-o" "sumo_data/trips.trips.xml"]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        error_output = result.stderr
+        if(error_output):
+            print("Erro:", error_output)
 
     def generateDemandByTaz(self, taz_file):
         command = [self.duarouter_path, "-n", self.net_file, "-r", taz_file, "-o", self.rou_file]

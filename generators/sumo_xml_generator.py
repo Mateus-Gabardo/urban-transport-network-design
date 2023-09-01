@@ -31,7 +31,15 @@ class SumoFilesGenerator:
         nodes_file = os.path.join(desteny, nodeFile)
         edges_file = os.path.join(desteny, edgeFile)
         net_file = os.path.join(desteny, filename)
-        subprocess.run(["netconvert", "--node-files", nodes_file, "--edge-files", edges_file, "-o", net_file, "--no-warnings"])
+        result  = subprocess.run(
+            ["netconvert", "--node-files", nodes_file, "--edge-files", edges_file, "-o", net_file, "--no-warnings"],
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, text=True
+        )
+        error_output = result.stderr
+        if(error_output):
+            print("Erro:", error_output)
+
     
     def generateSumoFile(self, file_name_node, file_name_edge, destiny = "sumo_data"):
         self.generate_nodes_file(file_name_node, destiny)
