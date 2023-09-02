@@ -8,4 +8,5 @@ def create_parser():
     parser.add_argument("--bd", type=float, default=50, help="Quantidade de budget")
     parser.add_argument("--it", type=int, default=10, help="Número de iterações")
     parser.add_argument("--st", type=int, default=2, help="Estratégia de melhoria. 1 - Melhor melhoria, 2 - Primeira melhoria")
+    parser.add_argument("--vc", type=int, default=50, help="Número de Veículos")
     return parser
