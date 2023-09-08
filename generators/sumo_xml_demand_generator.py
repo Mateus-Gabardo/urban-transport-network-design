@@ -1,3 +1,4 @@
+import argparse
 import subprocess
 import shutil
 import os
@@ -20,3 +21,22 @@ class SumoXmlDemandGenerator:
     def generateDemandByTaz(self, taz_file):
         command = [self.duarouter_path, "-n", self.net_file, "-r", taz_file, "-o", self.rou_file]
         subprocess.call(command)
+    
+    def generateDemandByTrips(self, trips_file):
+        command = [self.duarouter_path, "-n", self.net_file, "-t", trips_file, "-o", self.rou_file]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        error_output = result.stderr
+        if(error_output):
+            print("Erro:", error_output)
+        
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+            usage="python generators/sumo_xml_demand_generator.py -n ./sumo_data/network.net.xml -t ./data/sioux_falls/SiouxFalls_trips.xml",
+        )
+    parser.add_argument("-n", type=str, required= True, help="Caminho de rotas")
+    parser.add_argument("-t", type=str, required= True, help="Caminho do arquivo de trips a ser convertido.")
+    parser.add_argument("-o", type=str, default="rou.xml", help="Arquivo onde será salvo as rotas")
+    args = parser.parse_args()
+    generator = SumoXmlDemandGenerator(net_file=args.n, rou_file=args.o)
+    generator.generateDemandByTrips(trips_file=args.t)

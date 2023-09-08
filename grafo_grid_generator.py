@@ -1,6 +1,7 @@
 import json
 from generators.grafo_generator import GrafoJsonWriter
 from generators.sumo_xml_generator import SumoFilesGenerator
+from generators.sumo_xml_trips_generator import generate_trip_file
 
 def __gerar_instancia_grid():
     grafo = GrafoJsonWriter()
@@ -94,9 +95,13 @@ def __gerarIntanciaSumo():
     grafoFile = SumoFilesGenerator(data)
     grafoFile.generateSumoFile(file_name_edge="edges.xml", file_name_node="nodes.xml")
     
+def __gerarInstanciaTrips():
+    generate_trip_file(origin_dest_data="data/grid/grid_trips.tntp", destination="data/grid/grid_trips.xml", scala=50)
+    
 def gerar_intancia_grid():
     __gerar_instancia_grid()
     __gerarIntanciaSumo()
+    __gerarInstanciaTrips()
 
 if __name__ == "__main__":
     gerar_intancia_grid()
