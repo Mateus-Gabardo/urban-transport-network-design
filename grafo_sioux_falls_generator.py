@@ -2,7 +2,7 @@ import json
 from generators.grafo_generator import GrafoJsonWriter
 from generators.sumo_xml_generator import SumoFilesGenerator
 from generators.OD_matrix_converter import ODMatrixConverter
-from generators.sumo_xml_demand_generator import SumoXmlDemandGenerator
+from generators.sumo_xml_trips_generator import generate_trip_file
 
 def __gerar_instancia_sioux_falls():
 
@@ -206,23 +206,15 @@ def __gerarIntanciaSumo():
     grafoFile = SumoFilesGenerator(data)
     grafoFile.generateSumoFile(file_name_edge="edges.xml", file_name_node="nodes.xml")
 
-def __gerarDemandaOD(scala):
-    inputFile = "data/sioux_falls/SiouxFalls_trips.tntp"
-    outputFile = "data/sioux_falls/siouxFalls_taz.xml"
-    ODConverter = ODMatrixConverter(inputFile, outputFile)
-    ODConverter.convert_OD_matrix(scala)
-    network_file = "sumo_data/network.net.xml"
-    taz_file = "data/sioux_falls/siouxFalls_taz.xml"
-    output_file = "sumo_data/routes.xml"
-    demand_generator = SumoXmlDemandGenerator(network_file, output_file)
-    demand_generator.generateDemandByTaz(taz_file)
+def __gerarInstanciaTrips():
+    generate_trip_file(origin_dest_data="data/sioux_falls/SiouxFalls_trips.tntp", destination="data/sioux_falls/siouxFalls_trips.xml", scala=6)
 
 
 
 def gerar_intancia_sioux_falls():
     __gerar_instancia_sioux_falls()
     __gerarIntanciaSumo()
-    #__gerarDemandaOD(scala)
+    __gerarInstanciaTrips()
 
 if __name__ == "__main__":
     gerar_intancia_sioux_falls()
