@@ -88,7 +88,7 @@ def convert_router(file_net, file_od, destination, scala=1):
                             for _ in range(flow):
                                 choice_path = all_paths[next_path]
                                 choice_path = ' '.join([f"{choice_path[i]}-{choice_path[i+1]}" for i in range(len(choice_path)-1)])
-                                f.write(f'    <vehicle id="{trip_id}" depart="{depart_time}">\n')
+                                f.write(f'    <vehicle id="{trip_id}" depart= "0.00">\n')
                                 f.write(f'        <route edges="{choice_path}"/>\n')
                                 f.write(f'    </vehicle>\n')
                                 trip_id = trip_id + 1
