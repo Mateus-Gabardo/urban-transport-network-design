@@ -33,7 +33,7 @@ class SumoSimulation:
         self.vehicles = vehicles
     
     def gerarRotas(self):
-        print('Gerando nova rota')
+        print('Gerando novas rotas')
         if self.trips is None:
             self.__gerarRotasAleatoria()
         else:

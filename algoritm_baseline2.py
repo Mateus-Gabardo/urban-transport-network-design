@@ -5,7 +5,7 @@ import json
 from arg_parser import create_parser
 from sumo_simulation import SumoSimulation
 
-def searchBestNeighbor(network, budget, estrategia, vehicles):
+def searchBestNeighbor(network, budget, estrategia, vehicles, trips, scala):
     no1, no2 = getTwoRandomNodes(network)
     arestas_relacionadas = getRelatedEdges(network, no1, no2)
     modificacoes = generateValidCombinations(network, arestas_relacionadas, budget)
@@ -17,7 +17,7 @@ def searchBestNeighbor(network, budget, estrategia, vehicles):
     for conjunto_arestas in modificacoes:
         new_network = applyChanges(network, conjunto_arestas)
 
-        simulador = SumoSimulation(new_network, vehicles)
+        simulador = SumoSimulation(new_network, scala=scala, trips=trips, vehicles=vehicles)
         avgTravelTime = simulador.run_simulation()
 
         if min_tmax > avgTravelTime:
@@ -68,7 +68,7 @@ def applyChanges(network, conjunto_arestas):
 
     return new_network
 
-def initialSolution(network, budget, vehicles):
+def initialSolution(network, budget, vehicles, trips, scala):
     new_network = network
     tentativas = len(network['arestas'])
     best_modificacoes = []
@@ -89,20 +89,20 @@ def initialSolution(network, budget, vehicles):
 
     if best_modificacoes:
         new_network = applyChanges(network, best_modificacoes)
-        simulador = SumoSimulation(new_network, vehicles)
+        simulador = SumoSimulation(json_str=network, scala=scala, trips=trips, vehicles=vehicles)
         avgTravelTime = simulador.run_simulation()
     else:
         avgTravelTime = None
 
     return new_network, avgTravelTime
 
-def localSearch(grafo, budget, interacoes=50, estrategia=2, vehicles = 50):
-    best_network, best_temp = initialSolution(grafo, budget, vehicles)
+def localSearch(grafo, budget, trips, scala, interacoes=50, estrategia=2, vehicles = 50 ):
+    best_network, best_temp = initialSolution(grafo, budget, vehicles, trips, scala)
 
     qtd_iteracoes = interacoes
 
     while int(qtd_iteracoes) > 0:
-        network_curent, temp_curent = searchBestNeighbor(grafo, budget, estrategia, vehicles)
+        network_curent, temp_curent = searchBestNeighbor(grafo, budget, estrategia, vehicles, trips, scala)
         if temp_curent < best_temp:
             best_temp = temp_curent
             best_network = network_curent
@@ -115,12 +115,12 @@ def run(args):
         json_str = f.read()
         data = json.loads(json_str)
 
-    localSearch(grafo= data, budget= args.bd, estrategia= args.st, interacoes=args.it, vehicles= args.vc)
+    localSearch(grafo= data, budget= args.bd, estrategia= args.st, interacoes=args.it, vehicles= args.vc, trips=args.tntp, scala=args.scl)
 
 if __name__ == "__main__":
     parser = create_parser()
     parser.description = 'Algorimo baseline melhorado'
-    parser.usage='python algoritm_baseline2.py --ist sioux_falls/siouxFalls.json --bd 20 --it 3 --st 2'
+    parser.usage='python algoritm_baseline2.py --ist grid/grid.json --tntp data/grid/grid_trips.tntp --scl 50 --bd 20 --it 3 --st 2'
     args = parser.parse_args()
     run(args)
 

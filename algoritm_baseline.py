@@ -97,7 +97,7 @@ def run(args):
 
 if __name__ == "__main__":
     parser = create_parser()
-    parser.description = 'Algorimo Baseline utilizando busca aleatória '
-    parser.usage='python algoritm_baseline.py --ist grid/grid.json --tntp data/grid/grid_trips.tntp --scl 150 --bd 5 --it 3 --st 2'
+    parser.description = 'Algorimo Baseline utilizando busca aleatória'
+    parser.usage='python algoritm_baseline.py --ist grid/grid.json --tntp data/grid/grid_trips.tntp --scl 50 --bd 5 --it 3 --st 2'
     args = parser.parse_args()
     run(args)
