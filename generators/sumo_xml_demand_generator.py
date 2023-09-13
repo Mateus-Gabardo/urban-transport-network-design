@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import shutil
 import os
+import sys
 
 class SumoXmlDemandGenerator:
     def __init__(self, net_file, rou_file):
@@ -12,7 +13,7 @@ class SumoXmlDemandGenerator:
         self.duarouter_path = os.path.join(self.sumo_dir, "duarouter")
     
     def generateDemand(self, num_vehicles, probability, seed):
-        command = ["python", "generators/randomTrips.py", "-n", self.net_file, "-r", self.rou_file, "-e", str(num_vehicles), "-p", str(probability), "-s", str(seed), "-o" "sumo_data/trips.trips.xml"]
+        command = [sys.executable, "generators/randomTrips.py", "-n", self.net_file, "-r", self.rou_file, "-e", str(num_vehicles), "-p", str(probability), "-s", str(seed), "-o" "sumo_data/trips.trips.xml"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         error_output = result.stderr
         if(error_output):
