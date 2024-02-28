@@ -101,7 +101,7 @@ def __gerarInstanciaTrips():
 def gerar_intancia_grid():
     __gerar_instancia_grid()
     __gerarIntanciaSumo()
-    __gerarInstanciaTrips()
+    #__gerarInstanciaTrips()
 
 if __name__ == "__main__":
     gerar_intancia_grid()

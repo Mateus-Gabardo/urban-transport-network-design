@@ -3,13 +3,19 @@ import subprocess
 import time
 import sys
 import shutil
+from generators.sumo_router import convert_router
 from generators.sumo_xml_demand_generator import SumoXmlDemandGenerator
 from generators.sumo_xml_generator import SumoFilesGenerator
+from generators.sumo_xml_trips_generator import generate_trip_file
 import sumolib
 
-
+# Classe responsável pela realização da simulação.
+# json_str - arquivo em json na estrutura do grafo
+# trips - Representa a matriz OD que deverá ser passada, e que será convertida no conjunto de rotas. Se não passado será gerado uma rota
+# aleatória.
+# vehicles - representa a quantidade de veiculos que serão gerados na rota aleatória. Só será considerado caso não seja passado uma rota.
 class SumoSimulation:
-    def __init__(self, json_str, trips):
+    def __init__(self, json_str, trips, scala = 1, vehicles = 50):
         sumo_path = shutil.which('sumo')
         self.sumo_dir = os.path.dirname(sumo_path)
 
@@ -23,11 +29,21 @@ class SumoSimulation:
         self.sumoCmd = [self.sumoBinary, "-c", "sumo_data/config.sumocfg"]
         self.json_str = json_str
         self.trips = trips
+        self.scala = scala
+        self.vehicles = vehicles
     
     def gerarRotas(self):
+        print('Gerando novas rotas')
+        if self.trips is None:
+            self.__gerarRotasAleatoria()
+        else:
+            self.__gerarDemandAsOD()
+
+    # Gera a demanda a partir de uma quantidade de veículos passado como parâmetro.
+    def __gerarRotasAleatoria(self):
         network_file = "sumo_data/network.net.xml"
-        output_file = "sumo_data/routes.xml"
-        num_trips = self.trips
+        output_file = "sumo_data/routes.rou.xml"
+        num_trips = self.vehicles
         trip_depart_period = 1
         random_seed = 42
 
@@ -35,8 +51,12 @@ class SumoSimulation:
 
         # Gera a demanda de maneira aleatória mas com um seed randomico
         demand_generator.generateDemand(num_trips, trip_depart_period, random_seed)
-
     
+    def __gerarDemandAsOD(self):
+        outputFile = "sumo_data/routes.rou.xml"
+        net_file = "sumo_data/network.net.xml"
+        convert_router(file_net=net_file, file_od= self.trips, destination=outputFile, scala=self.scala)
+
     def __average_speed(self):
         speedSum = 0.0
         edgeCount = 0
@@ -55,7 +75,6 @@ class SumoSimulation:
     def __run_sumo(self):
         output_file = "sumo_data/output.xml"
         command = self.sumoCmd + ["--edgedata-output", output_file]
-        #subprocess.call(command)
 
         try:
             start_time = time.time()
@@ -71,17 +90,11 @@ class SumoSimulation:
         except subprocess.CalledProcessError as e:
             # Handle any error that occurred during the subprocess execution
             print("Error: ", e)
-    
-
 
     def run_simulation(self):
-        # Gerar os arquivos de configuração e de rotas
         grafoFile = SumoFilesGenerator(self.json_str)
         grafoFile.generateSumoFile(file_name_edge="edges.xml", file_name_node="nodes.xml")
-
         self.gerarRotas()
-
-        # Executamos o sumo
         self.__run_sumo()
         return self.__average_speed()
 

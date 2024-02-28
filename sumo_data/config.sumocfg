@@ -1,7 +1,7 @@
 <configuration> 
 	<input> 
  		<net-file value="network.net.xml" />
-		<route-files value="routes.xml" />
+		<route-files value="routes.rou.xml" />
 	</input>
 	<gui_only>
 		<time-to-teleport value="0"/>

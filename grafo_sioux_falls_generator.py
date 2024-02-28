@@ -214,7 +214,7 @@ def __gerarInstanciaTrips():
 def gerar_intancia_sioux_falls():
     __gerar_instancia_sioux_falls()
     __gerarIntanciaSumo()
-    __gerarInstanciaTrips()
+    #__gerarInstanciaTrips()
 
 if __name__ == "__main__":
     gerar_intancia_sioux_falls()

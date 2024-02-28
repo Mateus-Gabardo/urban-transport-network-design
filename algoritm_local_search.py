@@ -114,7 +114,7 @@ def reduzir_budget(solucao_inicial, atributos, budget_total):
     return solucao_final, budget_restante
 
 
-def avalia_melhoria(solucao, atributos, network, demanda):
+def avalia_melhoria(solucao, atributos, network, vehicles, trips, scala):
     novo_tempo = float("inf")
     novo_network = copy.deepcopy(network)
 
@@ -128,13 +128,13 @@ def avalia_melhoria(solucao, atributos, network, demanda):
             novo_network['arestas'][id_aresta] = nova_propriedade[1]
 
     # Executamos a simulacao com o novo grafo.
-    simulador = SumoSimulation(novo_network, demanda)
+    simulador = SumoSimulation(json_str=novo_network, scala=scala, trips=trips, vehicles=vehicles)
     novo_tempo = simulador.run_simulation()
     return novo_tempo, novo_network
 
 # solucao_atual = S = [1-6, 2-4]
 # Network - corresponde ao grafo da instancia
-def gerar_vizinhos(solucao_atual, network, budget_restante, matriz_adj, atributos, vertice_inicial, estrategia, demanda):
+def gerar_vizinhos(solucao_atual, network, budget_restante, matriz_adj, atributos, vertice_inicial, estrategia, vehicles, trips, scala):
     melhor_solucao = solucao_atual
     menor_tempo = float("inf")
     melhor_network = copy.deepcopy(network)
@@ -146,7 +146,7 @@ def gerar_vizinhos(solucao_atual, network, budget_restante, matriz_adj, atributo
             return
         
         if solucao_atual:
-            novo_tempo, novo_network = avalia_melhoria(solucao_atual, atributos, network, demanda)
+            novo_tempo, novo_network = avalia_melhoria(solucao_atual, atributos, network, vehicles, trips, scala)
             
             if novo_tempo < menor_tempo:
                 menor_tempo = novo_tempo
@@ -171,7 +171,7 @@ def gerar_vizinhos(solucao_atual, network, budget_restante, matriz_adj, atributo
     buscar(solucao_atual, budget_restante)
     return melhor_solucao, melhor_network, menor_tempo
 
-def buscar_solucao_inicial(grafo, budget, demanda, atributos):
+def buscar_solucao_inicial(grafo, budget, vehicles, atributos, trips, scala):
     solucao = []
     melhor_network = grafo
     melhor_tempo = 0
@@ -188,7 +188,7 @@ def buscar_solucao_inicial(grafo, budget, demanda, atributos):
         
         atributos_lista.remove(indice_sorteado)
 
-    melhor_tempo, melhor_network = avalia_melhoria(solucao, atributos, grafo, demanda)
+    melhor_tempo, melhor_network = avalia_melhoria(solucao, atributos, grafo, vehicles, trips, scala)
     return solucao, melhor_network, melhor_tempo
 
 # Algoritmo de busca local aplicado ao Network Design Problem
@@ -203,9 +203,9 @@ def buscar_solucao_inicial(grafo, budget, demanda, atributos):
 # O exemplo desses atributos será da segunte maneira: 
 # 
 # {1-6: ['A', {'length': 20, 'maxSpeed': 80, 'numLanes': 1, 'priority': 100}]}
-def busca_local(grafo, budget, interacoes=10, estrategia=1, vehicles = 50):
+def busca_local(grafo, budget, trips, scala, interacoes=10, estrategia=1, vehicles = 50):
     matriz_adj, atributos = criar_matriz_adjacencia(grafo)
-    melhor_solucao, melhor_network, melhor_tempo = buscar_solucao_inicial(grafo, budget, vehicles, atributos)
+    melhor_solucao, melhor_network, melhor_tempo = buscar_solucao_inicial(grafo, budget, vehicles, atributos, trips, scala)
     qtd_iteracoes = interacoes
     vertice_inicial = 0
 
@@ -214,7 +214,7 @@ def busca_local(grafo, budget, interacoes=10, estrategia=1, vehicles = 50):
         solucao_reduzida, budget_restante = reduzir_budget(melhor_solucao, atributos, budget)
 
         # Buscamos os vizinhos
-        nova_solucao, novo_network, novo_tempo = gerar_vizinhos(solucao_reduzida, grafo, budget_restante, matriz_adj, atributos, vertice_inicial, estrategia, vehicles)
+        nova_solucao, novo_network, novo_tempo = gerar_vizinhos(solucao_reduzida, grafo, budget_restante, matriz_adj, atributos, vertice_inicial, estrategia, vehicles, trips, scala)
         if novo_tempo < melhor_tempo:
             melhor_tempo = novo_tempo
             melhor_network = novo_network
@@ -228,11 +228,19 @@ def run(args):
         json_str = f.read()
         data = json.loads(json_str)
 
-    busca_local(grafo= data, budget= args.bd, estrategia= args.st, interacoes=args.it)
+    busca_local(
+        grafo= data,
+        budget= args.bd,
+        estrategia= args.st,
+        interacoes=args.it,
+        vehicles= args.vc,
+        trips=args.tntp,
+        scala=args.scl
+    )
 
 if __name__ == "__main__":
     parser = create_parser()
     parser.description = 'Algorimo de busca local'
-    parser.usage='python algoritm_local_search.py --ist sioux_falls/siouxFalls.json --bd 20 --it 3 --st 2'
+    parser.usage='python algoritm_local_search.py --ist grid/grid.json --tntp data/grid/grid_trips.tntp --scl 50 --bd 5 --it 3 --st 2'
     args = parser.parse_args()
     run(args)
